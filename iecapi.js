@@ -16,17 +16,24 @@ if(process.argv[2] == 'dev'){
 
 var express = require('express')
 var app = express();
+var bodyParser = require('body-parser')
 var path = require('path');
 var fs = require('fs');
 var http = require('http');
 
-var UAParser = require('ua-parser-js');
-
 var sys = require('sys');
 _ = require('lodash')
 
-app.use('/', express.static(__dirname + '/public'));
-app.use(express.bodyParser())
+AUTH_KEY = require('./config/auth.js')
+console.log(AUTH_KEY)
+
+worker = require('./fn/little-helper.js')
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+
+app.use('/', express.static(__dirname + '/public'))
+
 
 
 
