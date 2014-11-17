@@ -14,18 +14,27 @@ if(process.argv[2] == 'dev'){
  process.exit()
 }*/
 
+SQL_AUTH_KEY = require('./config/sql_auth.js')
+MONGO_AUTH_KEY = require('./config/mongo_auth.js')
+
 var express = require('express')
 var app = express();
 var bodyParser = require('body-parser')
-var path = require('path');
-var fs = require('fs');
-var http = require('http');
+var path = require('path')
+var fs = require('fs')
+var http = require('http')
 
-var sys = require('sys');
+var sys = require('sys')
 _ = require('lodash')
 
-AUTH_KEY = require('./config/auth.js')
-console.log(AUTH_KEY)
+local_database = 0
+var MongoClient = require('mongodb').MongoClient
+MongoClient.connect(MONGO_AUTH_KEY.host+':'+MONGO_AUTH_KEY.port+'/'MONGO_AUTH_KEY.db, function(err, db) {
+ local_database = 0
+})
+
+
+console.log(SQL_AUTH_KEY)
 
 worker = require('./fn/little-helper.js')
 
@@ -33,6 +42,14 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 app.use('/', express.static(__dirname + '/public'))
+
+
+app.get('/geo',function(req,res){
+	var group = req.query.g || "caribbean"
+	var indicator = req.query.i || "gdp"
+ 
+	res.send('ok')
+})
 
 
 app.listen(port);
