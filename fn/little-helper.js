@@ -7,7 +7,7 @@ exports.countriesInGroup = function(groups,cb){
 	
  local_database.collection('groups').find(find_query).sort({"n":-1}).limit(1000).toArray(function(e, results){
 	 if(e) console.log(e)
-  console.log('countriesInGroupresults',results)
+  //console.log('countriesInGroupresults',results)
   if(results[0])
   for(var i = 0;i<results.length;i++){
    the_countries.push(results[i].country)
@@ -55,7 +55,7 @@ var getLatest = function(uri,cb){
     buffer += chunk;
    });
    response.on('end', function () {
-    console.log('response',buffer)
+    //console.log('response',buffer)
     cb(JSON.parse(buffer))
    });
   }

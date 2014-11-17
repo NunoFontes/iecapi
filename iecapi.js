@@ -36,19 +36,24 @@ MongoClient.connect(MONGO_AUTH_KEY.host+':'+MONGO_AUTH_KEY.port+'/'+MONGO_AUTH_K
 console.log(SQL_AUTH_KEY)
 
 worker = require('./fn/little-helper.js')
+scientist = require('./fn/scientist.js')
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 app.use('/', express.static(__dirname + '/public'))
 
+
+//// GEOMAP
 app.get('/geo',function(req,res){
 	if(!local_database) return res.send('try later')
 	var group = req.query.g || "caribbean"
 	var indicator = req.query.i || "gdp"
  worker.countriesInGroup(group,function(list_of_countries){
   worker.getLatestFromTE(list_of_countries,'gdp',{},function(latest_data){
-  	res.send(latest_data)
+  	scientist.geoMapify(latest_data,function(geomap){
+  		res.send(geomap)
+  	})
   })
  })
 })
