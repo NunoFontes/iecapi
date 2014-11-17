@@ -28,8 +28,5 @@ _ = require('lodash')
 app.use('/', express.static(__dirname + '/public'));
 app.use(express.bodyParser())
 
-
-
-
 app.listen(port);
 console.log('listening @ '+port);
