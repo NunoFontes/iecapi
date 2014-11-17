@@ -22,17 +22,16 @@ var app = express();
 var bodyParser = require('body-parser')
 var path = require('path')
 var fs = require('fs')
-var http = require('http')
+http = require('http')
 
 var sys = require('sys')
 _ = require('lodash')
 
 local_database = 0
 var MongoClient = require('mongodb').MongoClient
-MongoClient.connect(MONGO_AUTH_KEY.host+':'+MONGO_AUTH_KEY.port+'/'MONGO_AUTH_KEY.db, function(err, db) {
- local_database = 0
+MongoClient.connect(MONGO_AUTH_KEY.host+':'+MONGO_AUTH_KEY.port+'/'+MONGO_AUTH_KEY.db, function(err, db) {
+ local_database = db
 })
-
 
 console.log(SQL_AUTH_KEY)
 
@@ -43,14 +42,16 @@ app.use(bodyParser.json())
 
 app.use('/', express.static(__dirname + '/public'))
 
-
 app.get('/geo',function(req,res){
+	if(!local_database) return res.send('try later')
 	var group = req.query.g || "caribbean"
 	var indicator = req.query.i || "gdp"
- 
-	res.send('ok')
+ worker.countriesInGroup(group,function(list_of_countries){
+  worker.getLatestFromTE(list_of_countries,'gdp',{},function(latest_data){
+  	res.send(latest_data)
+  })
+ })
 })
-
 
 app.listen(port);
 console.log('listening @ '+port);

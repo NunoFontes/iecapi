@@ -6,7 +6,8 @@
     "body-parser": "^1.9.2",
     "colors": "^1.0.3",
     "express": "^4.10.2",
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "mongodb": "^1.4.20"
   },
   "devDependencies": {},
   "engine": "node = 0.10.29"
