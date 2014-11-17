@@ -1,0 +1,13 @@
+{
+  "name": "iecapi",
+  "description": "API to serve data to ieconomics",
+  "author": "IEC",
+  "dependencies": {
+    "body-parser": "^1.9.2",
+    "colors": "^1.0.3",
+    "express": "^4.10.2",
+    "lodash": "^2.4.1"
+  },
+  "devDependencies": {},
+  "engine": "node = 0.10.29"
+}
