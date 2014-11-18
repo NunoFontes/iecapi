@@ -24,14 +24,14 @@ exports.getLatestFromTE = function(countries,indicators,opts,cb){
  if(typeof countries == 'string'){
   get__countries = countries
   hit = '/country/'+encodeURIComponent(get__countries)+'/'+encodeURIComponent(indicators)+'/'
-  return getLatest(hit,cb);
+  return get_TE_API(hit,cb);
  }else if(typeof countries == 'object'){
   var objective = Math.max(Math.round(countries.length/10))
   var contador = 0
   for(var chunks = 0; chunks < countries.length; chunks = chunks+10){
    get__countries = countries.slice(chunks,chunks+10).join(',')
    hit = '/country/'+encodeURIComponent(get__countries)+'/'+encodeURIComponent(indicators)+'/'
-   getLatest(hit,function(te_list){
+   get_TE_API(hit,function(te_list){
     if(te_list.length > 0) response = _.union(response,te_list)
     contador++
     if(contador > objective) cb(response)
@@ -40,8 +40,31 @@ exports.getLatestFromTE = function(countries,indicators,opts,cb){
  }
 }
 
+exports.getForecastsFromTE = function(pairs,cb){
+ var uri = '/forecast/country/'
+ var countries = []
+ var indicators = []
 
-var getLatest = function(uri,cb){
+ _.each(pairs.split(','),function(pair){
+  countries.push(pair.split(':')[0])
+  indicators.push(pair.split(':')[1])
+ })
+  
+ countries = _.unique(countries)
+ indicators = _.unique(indicators)
+
+ uri += countries.join(',')
+ uri += '/indicator/'
+ uri += indicators.join(',')
+ console.log(uri)
+ get_TE_API(uri,function(forecasts){
+  cb(forecasts)
+ })
+
+}
+
+
+var get_TE_API = function(uri,cb){
  var options = {
    host: 'api.tradingeconomics.com',
    port: 80,

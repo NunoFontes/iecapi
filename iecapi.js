@@ -36,13 +36,24 @@ MongoClient.connect(MONGO_AUTH_KEY.host+':'+MONGO_AUTH_KEY.port+'/'+MONGO_AUTH_K
 console.log(SQL_AUTH_KEY)
 
 worker = require('./fn/little-helper.js')
-scientist = require('./fn/scientist.js')
+//scientist = require('./fn/scientist.js')
+
+scientist = require('./fn/temp_scientist.js')
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 app.use('/', express.static(__dirname + '/public'))
 
+///// FORECASTS
+app.get('/fs',function(req,res){
+	var pairs = req.query.ids || "portugal:gdp"
+	worker.getForecastsFromTE(pairs,function(raw_forecasts){
+		scientist.forecastify(raw_forecasts,function(forecasts){
+			res.send(forecasts)
+		})
+	})
+})
 
 //// GEOMAP
 app.get('/geo',function(req,res){
