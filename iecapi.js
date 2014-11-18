@@ -36,9 +36,7 @@ MongoClient.connect(MONGO_AUTH_KEY.host+':'+MONGO_AUTH_KEY.port+'/'+MONGO_AUTH_K
 console.log(SQL_AUTH_KEY)
 
 worker = require('./fn/little-helper.js')
-//scientist = require('./fn/scientist.js')
-
-scientist = require('./fn/temp_scientist.js')
+scientist = require('./fn/scientist.js')
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())

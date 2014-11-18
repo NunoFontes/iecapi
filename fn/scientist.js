@@ -38,8 +38,66 @@ exports.adjustify = function(data,cb){
 }
 
 exports.forecastify = function(data,cb){
+  var series = []
 
+  for(var i = 0; i< data.length; i++){
+    series.push({serie:{}})
+    series[i].serie.name = data[i].Country + ' - ' +data[i].Category
+    series[i].serie.shortname = "."//data[i].Country + ' - ' +data[i].Category
+    series[i].serie.data = []
+  
+  fields = [{field:"q1",date:false},
+    {field:"q2",date:false},
+    {field:"q3",date:false},
+    {field:"q4",date:false},
+    {field:"YearEnd",date:new Date("2015/12/31")},
+    {field:"YearEnd2",date:new Date("2020/12/31")},
+    {field:"YearEnd3",date:new Date("2050/12/31")}]
+    
+    for(var f = 0; f<fields.length; f++){
+      if(!data[i][fields[f].field]) continue;
+      series[i].serie.data.push({x: new Date((fields[f].date?fields[f].date:data[i][fields[f].field+'date'])).getTime(),
+                                 y: data[i][fields[f].field],
+                                 ttvalue: data[i][fields[f].field],
+                                 ttunit: ""})
+    }
+    series[i].serie.data = interpolateMonthly(series[i].serie.data)
+  }
+  cb(series)
 }
+
+var interpolateMonthly = function(series){
+ if(series.length < 2) return series;
+
+ for(var i = 0; i< series.length -1 ; i++){
+  var diff_in_months = (series[1+i].x - series[i].x)/(1000*60*60*24*31)
+
+  if(diff_in_months > 2){
+   series.splice(i+1, 0, {x: addMonths(series[i].x),
+                        y: series[i].y,
+                        ttvalue: series[i].y,
+                        ttunit: ""})
+  }
+  //console.log(diff_in_months)
+  //console.log(new Date(addMonths(series[i].x)),new Date(series[i].x))
+  //console.log(i, series[i])
+ }
+ return series
+}
+
+
+function addMonths(dateObj, num) {
+ if(!num) num = 1
+ if(typeof dateObj == 'number') dateObj = new Date(dateObj)
+ var currentMonth = dateObj.getMonth() + dateObj.getFullYear() * 12;
+ dateObj.setMonth(dateObj.getMonth() + num);
+ var diff = dateObj.getMonth() + dateObj.getFullYear() * 12 - currentMonth;
+
+ // If don't get the right number, set date to 
+ // last day of previous month
+ if (diff != num) dateObj.setDate(0); 
+ return dateObj.getTime();
+} 
 
 
 var average = function(a) {

@@ -1,0 +1,1 @@
+module.exports = {'Authorization': 'Client 9541a8a3c3ccb5b:3ce8e344216b372'}
